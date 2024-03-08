@@ -1,6 +1,7 @@
 #make sure that the time is spaces (appropriate time between each print statement)
 import time
 import random
+from keyflow import kfprint, kfinput
 array = ['heads' , 'tails']
 #score = from database
 
@@ -8,7 +9,7 @@ array = ['heads' , 'tails']
 def input_validation():
     loop = True
     while loop == True:
-        choice_user = str(input("Choose: \n*Heads \n*Talis \nPut answer here: "))
+        choice_user = str(kfinput("Choose: \n*Heads \n*Talis \nPut answer here: ", speed=0.2))
         choice_user = choice_user.lower()
         if choice_user in array:
             time.sleep(1.5)
