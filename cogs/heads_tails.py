@@ -9,16 +9,16 @@ array = ['heads' , 'tails']
 def input_validation():
     loop = True
     while loop == True:
-        choice_user = str(kfinput("Choose: \n*Heads \n*Talis \nPut answer here: ", speed=0.2))
+        choice_user = str(kfinput("\nChoose: \n*Heads \n*Talis \nPut answer here: ", speed=0.05))
         choice_user = choice_user.lower()
         if choice_user in array:
             time.sleep(1.5)
-            print(f"Ok, you have chosen: {choice_user}")
+            kfprint(f"Ok, you have chosen: {choice_user}", speed=0.05)
             loop = False
             heads_tails_game(choice_user)
 
         else:
-            print("Please look at the options, and try again.")
+            kfprint("Please look at the options and try again.", speed=0.1)
             time.sleep(1)
 
 
@@ -28,22 +28,23 @@ def heads_tails_game(choice_user):
     place_holder = random.randint(0, 1)
     choice_game = array[place_holder]
 
-    print("The results are in!")
+    kfprint("\nThe results are in!", speed=0.05)
     time.sleep(1.5)
-    print("And you are...")
+    kfprint("\nAnd you are...", speed=0.2)
+    time.sleep(2)
 
     #choices
     if choice_game == choice_user:
-        print("Lucky! You got it right. Heres 'x' amount of points.")
+        kfprint("\nLucky! You got it right. Heres 'x' amount of points.", speed=0.05)
         #decrease score from database
     else:
-        print("Unlucky. You lost 'x' amount of points. Better luck next time.")
+        kfprint("\nUnlucky. You lost 'x' amount of points. Better luck next time.", speed=0.05)
         #decrease score from database
 
 
 
 
 #introduction
-print("Welcome to heads or tails.")
+kfprint("Welcome to heads or tails.", speed=0.05)
 time.sleep(1.5)
 input_validation()
