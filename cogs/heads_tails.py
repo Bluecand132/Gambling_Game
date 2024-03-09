@@ -27,7 +27,7 @@ def input_validation():
 def heads_tails_game(choice_user):
     place_holder = random.randint(0, 1)
     choice_game = array[place_holder]
-
+    time.sleep(1.5)
     kfprint("\nThe results are in!", speed=0.05)
     time.sleep(1.5)
     kfprint("\nAnd you are...", speed=0.2)
@@ -36,7 +36,7 @@ def heads_tails_game(choice_user):
     #choices
     if choice_game == choice_user:
         kfprint("\nLucky! You got it right. Heres 'x' amount of points.", speed=0.05)
-        #decrease score from database
+        #increase score from database
     else:
         kfprint("\nUnlucky. You lost 'x' amount of points. Better luck next time.", speed=0.05)
         #decrease score from database
@@ -44,7 +44,7 @@ def heads_tails_game(choice_user):
 
 
 
-#introduction
+#where game is initialised
 kfprint("Welcome to heads or tails.", speed=0.05)
 time.sleep(1.5)
 input_validation()
