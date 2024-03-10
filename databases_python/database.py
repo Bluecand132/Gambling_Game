@@ -1,13 +1,13 @@
 import sqlite3
 
 #define connection (used to connect to a database) and cursor (used to interact with the database(e.g manupulate it))
-connection = sqlite3.connect('test_database.db')
+connection = sqlite3.connect('user_database.db')
 cursor = connection.cursor()
 
-# #create table > user_table
+#creates user_table
 
 # create_table_sql = '''
-# 	CREATE TABLE IF NOT EXISTS user_table (
+# CREATE TABLE IF NOT EXISTS user_table (
 # 		id INTEGER PRIMARY KEY,
 # 		username TEXT,
 # 		password TEXT
@@ -34,6 +34,7 @@ cursor = connection.cursor()
 # #closes connection
 # connection.close()
 
+#creates score_table
 create_table_sql = '''
 	CREATE TABLE IF NOT EXISTS score_table (
     id INTEGER PRIMARY KEY,
@@ -58,7 +59,7 @@ avg_wins_test = wins_test/(wins_test + losses_test + draws_test)
 avg_losses_test = losses_test/(wins_test + losses_test + draws_test)
 avg_draws_test = draws_test/(wins_test + losses_test + draws_test)
 
-INSERT_QUERY = "INSERT INTO score_table (id, balance, wins, losses, draws, avg_wins, avg_losses, avg_draws) VALUES (?, ?, ?, ?, ?, ?, ?, ?))"
+INSERT_QUERY = "INSERT INTO score_table (id, balance, wins, losses, draws, avg_wins, avg_losses, avg_draws) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 cursor.execute(INSERT_QUERY, (id_foreign_test, balance_test, wins_test, losses_test, draws_test, avg_wins_test, avg_losses_test, avg_draws_test))
 
 #saves changes made
