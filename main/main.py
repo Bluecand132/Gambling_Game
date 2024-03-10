@@ -1,20 +1,23 @@
+import time
+from keyflow import kfprint, kfinput
 
 #checks if the username and password are in the database
 def check_username_and_password():
-    while True:
-        username = input("Enter your username: ")
-        #check to see if the username is in the database. if not, ask for username again
+    username = kfinput("\nEnter your username: ", speed=0.05)
+    #check to see if the username is in the database. if not, ask for username again
 
-        #if the username is legit, check to see if the password is in the database. if not, ask for password again
-        password = input("Enter your password: ")
+    #if the username is legit, check to see if the password is in the database. if not, ask for password again
+    password = kfinput("\nEnter your password: ", speed=0.05)
 
 #creates username and password
 def create_username_and_password():
-    print("If you ever want to go to the introduction, type 'Back' at any time.")
+    kfprint("\nIf you ever want to go to the introduction, type 'Back' at any time.", speed=0.05)
+    time.sleep(0.5)
     while True:
-        username = input("Enter a username: ")
+        username = kfinput("\nEnter a username: ", speed=0.05)
         if username == 'Back':
-            print("Ok, let's go back.")
+            time.sleep(0.5)
+            kfprint("\nOk, let's go back.", speed=0.05)
             introduction()
             break
         else:
@@ -23,57 +26,66 @@ def create_username_and_password():
             break
 
 def get_password():
-    while True:
-        password = input("Enter a password: ")
+    loop = True
+    while loop:
+        password = kfinput("\nEnter a password: ", speed=0.05)
         if password == 'Back':
-            print("Ok, let's go back.")
+            kfprint("\nOk, let's go back.", speed=0.05)
             introduction()
-            break
+            loop = False
         else:
             return password
             
 #confirms password from user
 def confirm_password(password):
-    while True:
-        password_confirmation = input("Confirm your password: ")
+    loop = True
+    while loop:
+        password_confirmation = kfinput("\nConfirm your password: ", speed=0.05)
+        time.sleep(0.5)
         if password_confirmation == 'Back':
-            print("Ok, let's go back.")
+            kfprint("\nOk, let's go back.", speed=0.05)
             introduction()
-            break
+            loop = False
         elif password_confirmation == password:
-            print("Ok, you have entered your username and password.")
-            print("Let's put you in the database.")
+            kfprint("\nOk, you have entered your username and password.", speed=0.05)
+            time.sleep(0.5)
+            kfprint("\nLet's put you in the database.", speed=0.05)
             #put username and password in the user_table
-            break
+            loop = False
         else:
-            print("The passwords do not match. Going back to sign in.")
+            kfprint("\nThe passwords do not match. Going back to sign in.", speed=0.05)
             create_username_and_password()
-            break
+            loop = False
 
 
 
 #introduction
 def introduction():
-    print("If you have a username or password, please enter number '1'.")
-    print("Otherwise, please enter number '2'.")
+    time.sleep(0.5)
+    kfprint("\nIf you have a username or password, please enter number '1'.", speed=0.05)
+    time.sleep(0.2)
+    kfprint("\nOtherwise, please enter number '2'.", speed=0.05)
 
     #chooses 1 or 2
     while True:
         try:
-            if_user = int(input("Enter here: "))
+            if_user = int(kfinput("\nEnter here: ", speed=0.05))
+            time.sleep(0.5)
             if if_user == 1:
-                print ("Ok, let's check your username and password.")
+                kfprint ("\nOk, let's check your username and password.", speed=0.05)
+                time.sleep(0.5)
                 check_username_and_password()
                 break
             elif if_user == 2:
-                print("Ok, let's create you a username and password.")
+                kfprint("\nOk, let's create you a username and password.", speed=0.05)
+                time.sleep(0.5)
                 create_username_and_password()
                 break
             else:
-                print("The input you entered is not valid. Please try again.")
+                kfprint("\nThe input you entered is not valid. Please try again.", speed=0.1)
         except ValueError:
-            print("The input you entered is not valid. Please try again.")
+            kfprint("\nThe input you entered is not valid. Please try again.", speed=0.1)
             continue
 
-print("Hello! Welcome to this awesome gambling game!")
+kfprint("Hello! Welcome to this awesome gambling game!", speed=0.05)
 introduction()
