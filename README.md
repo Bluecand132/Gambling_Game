@@ -1,2 +1,2 @@
 # Gambling_Game
- A gambling game
+ This game is indeed a gambling game.
