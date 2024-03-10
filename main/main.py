@@ -75,42 +75,5 @@ def introduction():
             print("The input you entered is not valid. Please try again.")
             continue
 
-#creates username and password
-# def create_username_and_password():
-#     print("If you ever want to go to the introduction, type 'Back' at any time.")
-#     while True:
-#         username = input("Enter a username: ")
-#         if username == 'Back':
-#             print("Ok, let's go back.")
-#             introduction()
-#             break
-#         else:
-#             while True:
-#                 while True:
-#                     password = input("Enter a password: ")
-#                     if password == 'Back':
-#                         print("Ok, let's go back.")
-#                         introduction()
-#                         break
-#                     else:
-#                         password_confirmation = input("Confirm your password: ")
-#                         # if password == password_confirmation:
-#                         #     print("Ok, you have entered your username and password.")
-#                         #     print("Let's put you in the database.")
-#                         #     #put username and password in the user_table
-#                         #     break
-#                         if password_confirmation == 'Back':
-#                             print("Ok, let's go back.")
-#                             introduction()
-#                             break
-#                         elif password == password_confirmation:
-#                             print("Ok, you have entered your username and password.")
-#                             print("Let's put you in the database.")
-#                             #put username and password in the user_table
-#                             break
-#                         else:
-#                             print("The passwords do not match. Please try again.")
-#                             continue
-
 print("Hello! Welcome to this awesome gambling game!")
 introduction()
