@@ -11,19 +11,21 @@ def check_username_and_password():
 
 #creates username and password
 def create_username_and_password():
+    loop = True
     kfprint("\nIf you ever want to go to the introduction, type 'Back' at any time.", speed=0.05)
     time.sleep(0.5)
-    while True:
+    while loop:
         username = kfinput("\nEnter a username: ", speed=0.05)
         if username == 'Back':
             time.sleep(0.5)
             kfprint("\nOk, let's go back.", speed=0.05)
             introduction()
-            break
         else:
             password = get_password()
             confirm_password(password)
-            break
+            time.sleep(0.5)
+            kfprint("\nTime to put you in the database.", speed=0.05)
+            loop = False
 
 def get_password():
     loop = True
@@ -48,9 +50,6 @@ def confirm_password(password):
             loop = False
         elif password_confirmation == password:
             kfprint("\nOk, you have entered your username and password.", speed=0.05)
-            time.sleep(0.5)
-            kfprint("\nLet's put you in the database.", speed=0.05)
-            #put username and password in the user_table
             loop = False
         else:
             kfprint("\nThe passwords do not match. Going back to sign in.", speed=0.05)
