@@ -1,13 +1,58 @@
 import time
+import sqlite3
 from keyflow import kfprint, kfinput
 
 #checks if the username and password are in the database
 def check_username_and_password():
-    username = kfinput("\nEnter your username: ", speed=0.05)
-    #check to see if the username is in the database. if not, ask for username again
+    check_username = kfinput("\nEnter your username: ", speed=0.05)
+    if check_username == 'Back':
+        kfprint("\nOkay, let's go back.", speed=0.05)
+        introduction()
+    else:
+        check_username_in_database(check_username)
+    
+    check_password = kfinput("\nEnter your password: ", speed=0.05)
+    if check_password == 'Back':
+        kfprint("\nOkay, let's go back.", speed=0.05)
+        introduction()
+    else:
+        check_password_in_database(check_password)
+    
+    #give them options for the games to play
 
-    #if the username is legit, check to see if the password is in the database. if not, ask for password again
-    password = kfinput("\nEnter your password: ", speed=0.05)
+
+
+#checks to see if username is in the database
+def check_username_in_database(check_username):
+    connection = sqlite3.connect('user_database.db')
+    cursor = connection.cursor()
+
+    #checks to see if username is in database
+    cursor.execute("SELECT * FROM user_table WHERE username = ?", (check_username,))
+    result = cursor.fetchone()
+
+    if result:
+        return True
+    else:
+        kfprint("\nSorry, this username doesn't exist.", speed=0.05)
+        kfprint("\nTry again.", speed=0.05)
+        check_username_and_password()
+
+#checks to see if password is in the database
+def check_password_in_database(check_password):
+    connection = sqlite3.connect('user_database.db')
+    cursor = connection.cursor()
+
+    #checks to see if password is in database
+    cursor.execute("SELECT * FROM user_table WHERE password = ?", (check_password,))
+    result = cursor.fetchone()
+
+    if result:
+        return True
+    else:
+        kfprint("\nSorry, this password doesn't exist.", speed= 0.05)
+        kfprint("\nTry again.", speed=0.05)
+        check_username_and_password()
 
 #creates username and password
 def create_username_and_password():
@@ -25,6 +70,7 @@ def create_username_and_password():
             confirm_password(password)
             time.sleep(0.5)
             kfprint("\nTime to put you in the database.", speed=0.05)
+            put_username_and_password_to_database(username, password)
             loop = False
 
 def get_password():
@@ -56,6 +102,21 @@ def confirm_password(password):
             create_username_and_password()
             loop = False
 
+#puts username and password to the database
+def put_username_and_password_to_database(username, password):
+    connection = sqlite3.connect('user_database.db')
+    cursor = connection.cursor()
+
+    #puts username and password in the database
+    cursor.execute("INSERT INTO user_table (username, password) VALUES (?,?)", (username, password))
+
+    #puts username and password to the score_table
+    cursor.execute("INSERT INTO score_table (balance, wins, losses, draws, avg_wins, avg_losses, avg_draws) VALUES (?,?,?,?,?,?,?)", (50, 0, 0, 0, 0, 0, 0))
+    
+    #saves and closes the connection
+    connection.commit()
+    connection.close()
+
 
 
 #introduction
@@ -86,5 +147,6 @@ def introduction():
             kfprint("\nThe input you entered is not valid. Please try again.", speed=0.1)
             continue
 
+#starts the thingy!!!
 kfprint("Hello! Welcome to this awesome gambling game!", speed=0.05)
 introduction()
