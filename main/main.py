@@ -5,6 +5,7 @@ import bcrypt
 
 # checks if the username and password are in the database
 def check_username_and_password():
+    kfprint("\nIf you ever want to go to the introduction, type 'Back' at any time.", speed=0.05)
     check_username = kfinput("\nEnter your username: ", speed=0.05)
     if check_username == 'Back':
         kfprint("\nOkay, let's go back.", speed=0.05)
@@ -45,6 +46,16 @@ def check_username_in_database(check_username):
 
 #checks to see if password is in the database
 def check_password_in_database(check_password):
+    #takes hashed password from the database
+    connection = sqlite3.connect('user_database.db')
+    cursor = connection.cursor()
+    
+    cursor.execute("SELECT * FROM user_table WHERE password = ?", (check_password,))
+    hashed_password_from_database = cursor.fetchone()
+    
+    #checks if password is same as password in database (hashed)
+    return bcrypt.checkpw(check_password.encode('utf-8'), hashed_password_from_database)
+    
     connection = sqlite3.connect('user_database.db')
     cursor = connection.cursor()
 
@@ -96,7 +107,6 @@ def check_username_is_usable(username):
     cursor.execute("SELECT COUNT(*) FROM user_table WHERE username = ?", (username,))
     result = cursor.fetchone()[0]
     return result > 0
-    
 
 
 
