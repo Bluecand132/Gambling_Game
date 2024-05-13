@@ -19,7 +19,7 @@ def check_username_and_password():
         introduction()
     else:
         #turn inputted password into hashed password, and compare it with hashed password in the database
-        check_password_in_database(check_password)
+        check_password_in_database(check_password, check_username)
     
     # give them options for the games to play
 
@@ -45,28 +45,29 @@ def check_username_in_database(check_username):
 
 
 #checks to see if password is in the database
-def check_password_in_database(check_password):
+def check_password_in_database(check_password, check_username):
     #takes hashed password from the database
     connection = sqlite3.connect('user_database.db')
     cursor = connection.cursor()
     
-    cursor.execute("SELECT * FROM user_table WHERE password = ?", (check_password,))
-    hashed_password_from_database = cursor.fetchone()
-    
-    #checks if password is same as password in database (hashed)
-    return bcrypt.checkpw(check_password.encode('utf-8'), hashed_password_from_database)
-    
-    connection = sqlite3.connect('user_database.db')
-    cursor = connection.cursor()
+    cursor.execute("SELECT password FROM user_table WHERE username = ?", (check_username,))
+    password_to_check = cursor.fetchone()
 
-    #checks to see if password is in database
-    cursor.execute("SELECT * FROM user_table WHERE password = ?", (check_password,))
-    result = cursor.fetchone()
+    print("password is in the database,", password_to_check)
+
+    cursor.close()
+    connection.close()
+    # password_salt = cursor.execute("SELECT * FROM user_table WHERE salt = ?")
+    check_password_enc = check_password.encode('utf-8')
+    password_to_check_enc = password_to_check.encode('utf-8')
+
+    #checks if password is same as password in database (hashed)
+    result = bcrypt.checkpw(check_password_enc, password_to_check_enc)
 
     if result:
-        return True
+        kfprint("\nPassword matches!", speed=0.05)
+        # start giving choices to the user
     else:
-        #result doesnt RETURN BOOLEAN!!!
         kfprint("\nSorry, this password doesn't exist.", speed= 0.05)
         kfprint("\nTry again.", speed=0.05)
         check_username_and_password()
@@ -148,7 +149,7 @@ def put_username_and_password_to_database(username, password):
     cursor = connection.cursor()
 
     #puts username and password in the database
-    cursor.execute("INSERT INTO user_table (username, password) VALUES (?,?)", (username, hashedPassword))
+    cursor.execute("INSERT INTO user_table (username, password, salt) VALUES (?,?,?)", (username, hashedPassword, salt))
 
     #puts username and password to the score_table
     cursor.execute("INSERT INTO score_table (balance, wins, losses, draws, avg_wins, avg_losses, avg_draws) VALUES (?,?,?,?,?,?,?)", (50, 0, 0, 0, 0, 0, 0))
