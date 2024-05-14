@@ -71,8 +71,7 @@ cursor = connection.cursor()
 # #closes connection
 # connection.close()
 
-salt = '''
-    ALTER TABLE user_table ADD COLUMN salt;
-'''
-
-cursor.execute(salt)
+# salt = '''
+#     ALTER TABLE user_table ADD COLUMN salt;
+# '''
+# cursor.execute(salt)

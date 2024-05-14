@@ -2,21 +2,12 @@ import sqlite3
 import bcrypt
 import keyflow as kfprint
 
-check_password = input("Enter password to check: ")
-
+username = "test"
 connection = sqlite3.connect('user_database.db')
 cursor = connection.cursor()
 
-cursor.execute("SELECT * FROM user_table WHERE password = ?", (check_password,))
-hashed_password_from_database = cursor.fetchone()
-
-# Check if password exists in the database
-if hashed_password_from_database is not None:
-    # Check if password matches the hashed password in the database
-    if bcrypt.checkpw(check_password.encode('utf-8'), hashed_password_from_database[1]):
-        print("Password matches!")
-    else:
-        print("Password does not match!")
-else:
-    print("Sorry, this password doesn't exist.")
-    print("Try again.")
+username_id_array = cursor.execute("SELECT id FROM user_table WHERE username = ?", (username,))
+username_id = cursor.fetchone()[0]
+stats_array = cursor.execute("SELECT * FROM score_table WHERE id = ?", (username_id,))
+stats = cursor.fetchone()
+print(f"\nBalance: {stats[1]}\nWins: {stats[2]}\nLosses: {stats[3]}\nDraws: {stats[4]}\nAverage Wins: {stats[5]}\nAverage Losses: {stats[6]}\n Average Draws: {stats[7]}")

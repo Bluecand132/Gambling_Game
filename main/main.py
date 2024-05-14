@@ -2,6 +2,7 @@ import time
 import sqlite3
 from keyflow import kfprint, kfinput
 import bcrypt
+import heads_tails
 
 # checks if the username and password are in the database
 def check_username_and_password():
@@ -20,8 +21,6 @@ def check_username_and_password():
     else:
         #turn inputted password into hashed password, and compare it with hashed password in the database
         check_password_in_database(check_password, check_username)
-    
-    # give them options for the games to play
 
 
 
@@ -51,22 +50,21 @@ def check_password_in_database(check_password, check_username):
     cursor = connection.cursor()
     
     cursor.execute("SELECT password FROM user_table WHERE username = ?", (check_username,))
-    password_to_check = cursor.fetchone()
-
-    print("password is in the database,", password_to_check)
+    password_array = cursor.fetchone()
+    password_to_check = password_array[0]
 
     cursor.close()
     connection.close()
-    # password_salt = cursor.execute("SELECT * FROM user_table WHERE salt = ?")
-    check_password_enc = check_password.encode('utf-8')
-    password_to_check_enc = password_to_check.encode('utf-8')
 
+    check_password_enc = check_password.encode('utf-8')
     #checks if password is same as password in database (hashed)
-    result = bcrypt.checkpw(check_password_enc, password_to_check_enc)
+    result = bcrypt.checkpw(check_password_enc, password_to_check)
 
     if result:
         kfprint("\nPassword matches!", speed=0.05)
         # start giving choices to the user
+        time.sleep(0.05)
+        user_home(check_username)
     else:
         kfprint("\nSorry, this password doesn't exist.", speed= 0.05)
         kfprint("\nTry again.", speed=0.05)
@@ -77,10 +75,10 @@ def check_password_in_database(check_password, check_username):
 #creates username and password
 def create_username_and_password():
     kfprint("\nIf you ever want to go to the introduction, type 'Back' at any time.", speed=0.05)
-    time.sleep(0.5)
+    time.sleep(0.05)
     username = kfinput("\nEnter a username: ", speed=0.05)
     if username == 'Back':
-        time.sleep(0.5)
+        time.sleep(0.05)
         kfprint("\nOk, let's go back.", speed=0.05)
         introduction()
     else:
@@ -92,7 +90,7 @@ def create_username_and_password():
         else:
             password = get_password()
             confirm_password(password)
-            time.sleep(0.5)
+            time.sleep(0.05)
             kfprint("\nTime to put you in the database.", speed=0.05)
             put_username_and_password_to_database(username, password)
             return
@@ -157,6 +155,55 @@ def put_username_and_password_to_database(username, password):
     #saves and closes the connection
     connection.commit()
     connection.close()
+
+
+
+def user_home(username):
+    kfprint(f"\nHello, {username}! What would you like to do?", speed=0.05)
+    kfprint("\n1.) Display my stats.", speed = 0.05)
+    kfprint("\n2.) Play Heads or Tails.", speed = 0.05)
+    kfprint("\n3.) Play Rock, Paper, Scissors.", speed = 0.05)
+    choice = int(kfinput("\nEnter here: ", speed = 0.05))
+
+    if choice == 1:
+        #display the stats
+        connection = sqlite3.connect('user_database.db')
+        cursor = connection.cursor()
+
+        cursor.execute("SELECT id FROM user_table WHERE username = ?", (username,))
+        username_id = cursor.fetchone()[0]
+        cursor.execute("SELECT * FROM score_table WHERE id = ?", (username_id,))
+        stats = cursor.fetchone()
+        kfprint(f"\nBalance: {stats[1]}\nWins: {stats[2]}\nLosses: {stats[3]}\nDraws: {stats[4]}\nAverage Wins: {stats[5]}\nAverage Losses: {stats[6]}\nAverage Draws: {stats[7]}", speed = 0.05)
+        cursor.close()
+        connection.close()
+        back_input = kfinput("\nWhen you're ready, type 'Back' to go back to the main menu.\n", speed = 0.05)
+        
+        while True:
+            try:
+                if back_input == 'Back':
+                    user_home(username)
+                    break
+                else:
+                    kfprint("\nTry again.", speed = 0.05)
+                    continue
+            except ValueError:
+                kfprint("\nThe input you entered is not valid. Please try again.", speed = 0.05)
+                continue
+    
+    elif choice == 2:
+        #play heads or tails
+        kfprint("Welcome to heads or tails.", speed=0.05)
+        time.sleep(1.5)
+        heads_tails.input_validation()
+    
+    elif choice == 3:
+        #play rock, paper, scissors
+        print("balls")
+    
+    else:
+        kfprint("\nThe input you entered is not valid. Please try again.", speed=0.05)
+        user_home(username)
 
 
 

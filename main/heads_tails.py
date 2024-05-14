@@ -40,8 +40,3 @@ def heads_tails_game(choice_user):
     else:
         kfprint("\nUnlucky. You lost 'x' amount of points. Better luck next time.", speed=0.05)
         #decrease score from database
-
-#where game is initialised
-kfprint("Welcome to heads or tails.", speed=0.05)
-time.sleep(1.5)
-input_validation()
