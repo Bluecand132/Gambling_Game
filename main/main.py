@@ -159,6 +159,18 @@ def put_username_and_password_to_database(username, password):
 
 
 def user_home(username):
+    
+    #display the stats
+    connection = sqlite3.connect('user_database.db')
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT id FROM user_table WHERE username = ?", (username,))
+    username_id = cursor.fetchone()[0]
+    cursor.execute("SELECT * FROM score_table WHERE id = ?", (username_id,))
+    stats = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    
     kfprint(f"\nHello, {username}! What would you like to do?", speed=0.05)
     kfprint("\n1.) Display my stats.", speed = 0.05)
     kfprint("\n2.) Play Heads or Tails.", speed = 0.05)
@@ -166,36 +178,29 @@ def user_home(username):
     choice = int(kfinput("\nEnter here: ", speed = 0.05))
 
     if choice == 1:
-        #display the stats
-        connection = sqlite3.connect('user_database.db')
-        cursor = connection.cursor()
-
-        cursor.execute("SELECT id FROM user_table WHERE username = ?", (username,))
-        username_id = cursor.fetchone()[0]
-        cursor.execute("SELECT * FROM score_table WHERE id = ?", (username_id,))
-        stats = cursor.fetchone()
+        # #display the stats
         kfprint(f"\nBalance: {stats[1]}\nWins: {stats[2]}\nLosses: {stats[3]}\nDraws: {stats[4]}\nAverage Wins: {stats[5]}\nAverage Losses: {stats[6]}\nAverage Draws: {stats[7]}", speed = 0.05)
-        cursor.close()
-        connection.close()
-        back_input = kfinput("\nWhen you're ready, type 'Back' to go back to the main menu.\n", speed = 0.05)
-        
+        back_input = kfinput("\nWhen you're ready, type anything to go back to the main menu.\n", speed = 0.05)
+        back_input = back_input.lower()
+
         while True:
             try:
-                if back_input == 'Back':
+                if back_input == 'back':
                     user_home(username)
                     break
                 else:
-                    kfprint("\nTry again.", speed = 0.05)
-                    continue
+                    user_home(username)
+                    break
             except ValueError:
-                kfprint("\nThe input you entered is not valid. Please try again.", speed = 0.05)
-                continue
+                user_home(username)
+                break
     
     elif choice == 2:
         #play heads or tails
-        kfprint("Welcome to heads or tails.", speed=0.05)
+        kfprint("Putting you in heads or tails...", speed=0.1)
         time.sleep(1.5)
-        heads_tails.input_validation()
+        heads_tails.input_validation(username, username_id)
+        user_home(username)
     
     elif choice == 3:
         #play rock, paper, scissors
