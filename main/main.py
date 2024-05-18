@@ -3,6 +3,7 @@ import sqlite3
 from keyflow import kfprint, kfinput
 import bcrypt
 import heads_tails
+import rock_paper_scissors
 
 # checks if the username and password are in the database
 def check_username_and_password():
@@ -147,13 +148,36 @@ def put_username_and_password_to_database(username, password):
     cursor = connection.cursor()
 
     #puts username and password in the database
-    cursor.execute("INSERT INTO user_table (username, password, salt) VALUES (?,?,?)", (username, hashedPassword, salt))
+    cursor.execute("INSERT INTO user_table (username, password) VALUES (?,?)", (username, hashedPassword))
 
     #puts username and password to the score_table
-    cursor.execute("INSERT INTO score_table (balance, wins, losses, draws, avg_wins, avg_losses, avg_draws) VALUES (?,?,?,?,?,?,?)", (50, 0, 0, 0, 0, 0, 0))
+    cursor.execute("INSERT INTO score_table (balance, wins, losses, draws, avg_wins, avg_losses, avg_draws) VALUES (?,?,?,?,?,?,?)", (100, 0, 0, 0, 0, 0, 0))
     
     #saves and closes the connection
     connection.commit()
+    connection.close()
+
+    time.sleep(0.05)
+    kfprint("\nThis code will close. Please log in with the username and password you just created.", speed=0.05)
+
+
+
+#updates the stats for the averages
+def average_stats(stats):
+    connection = sqlite3.connect('user_database.db')
+    cursor = connection.cursor()
+
+    total = stats[2] + stats[3] + stats[4]
+    a_wins = stats[2] / total
+    a_losses = stats[3] / total
+    a_draws = stats[4] / total
+
+    cursor.execute("UPDATE score_table SET avg_wins = ? WHERE id = ?", (a_wins, stats[0]))
+    cursor.execute("UPDATE score_table SET avg_losses = ? WHERE id = ?", (a_losses, stats[0]))
+    cursor.execute("UPDATE score_table SET avg_draws = ? WHERE id = ?", (a_draws, stats[0]))
+
+    connection.commit()
+    cursor.close()
     connection.close()
 
 
@@ -170,11 +194,20 @@ def user_home(username):
     stats = cursor.fetchone()
     cursor.close()
     connection.close()
+
+    #updates the stats for the averages
+    average_stats(stats)
+
+    #if balance < 5, then user can't play anymore
+    if stats[1] < 5:
+        kfprint("\nYou don't have enough balance to play anymore. You officially lose.", speed=0.05)
+        return
     
+    #greets the user
     kfprint(f"\nHello, {username}! What would you like to do?", speed=0.05)
     kfprint("\n1.) Display my stats.", speed = 0.05)
-    kfprint("\n2.) Play Heads or Tails.", speed = 0.05)
-    kfprint("\n3.) Play Rock, Paper, Scissors.", speed = 0.05)
+    kfprint("\n2.) Play Heads or Tails. (2x reward/loss)", speed = 0.05)
+    kfprint("\n3.) Play Rock, Paper, Scissors. (3x reward/loss)", speed = 0.05)
     choice = int(kfinput("\nEnter here: ", speed = 0.05))
 
     if choice == 1:
@@ -204,7 +237,10 @@ def user_home(username):
     
     elif choice == 3:
         #play rock, paper, scissors
-        print("balls")
+        kfprint("Putting you in heads or tails...", speed=0.1)
+        time.sleep(1.5)
+        rock_paper_scissors.rock_paper_scissors_game(username, username_id)
+        user_home(username)
     
     else:
         kfprint("\nThe input you entered is not valid. Please try again.", speed=0.05)
@@ -215,7 +251,7 @@ def user_home(username):
 #introduction
 def introduction():
     time.sleep(0.5)
-    kfprint("\nIf you have a username or password, please enter number '1'.", speed=0.05)
+    kfprint("\nIf you have a username and password, please enter number '1'.", speed=0.05)
     time.sleep(0.2)
     kfprint("\nOtherwise, please enter number '2'.", speed=0.05)
 

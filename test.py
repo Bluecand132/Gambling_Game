@@ -1,13 +1,22 @@
 import sqlite3
-import bcrypt
-import keyflow as kfprint
 
-username = "test"
-connection = sqlite3.connect('user_database.db')
-cursor = connection.cursor()
+username = "encrypt"
 
-username_id_array = cursor.execute("SELECT id FROM user_table WHERE username = ?", (username,))
-username_id = cursor.fetchone()[0]
-stats_array = cursor.execute("SELECT * FROM score_table WHERE id = ?", (username_id,))
-stats = cursor.fetchone()
-print(f"\nBalance: {stats[1]}\nWins: {stats[2]}\nLosses: {stats[3]}\nDraws: {stats[4]}\nAverage Wins: {stats[5]}\nAverage Losses: {stats[6]}\n Average Draws: {stats[7]}")
+def average_stats(stats):
+    connection = sqlite3.connect('user_database.db')
+    cursor = connection.cursor()
+
+    total = stats[2] + stats[3] + stats[4]
+    a_wins = stats[2] / total
+    a_losses = stats[3] / total
+    a_draws = stats[4] / total
+
+    cursor.execute("UPDATE score_table SET avg_wins = ? WHERE id = ?", (a_wins, stats[0]))
+    cursor.execute("UPDATE score_table SET avg_losses = ? WHERE id = ?", (a_losses, stats[0]))
+    cursor.execute("UPDATE score_table SET avg_draws = ? WHERE id = ?", (a_draws, stats[0]))
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+average_stats(username)
